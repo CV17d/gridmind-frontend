@@ -20,8 +20,16 @@ export default function RegisterPage() {
       await registerUser(name, email, password);
       setSuccess('¡Cuenta creada exitosamente! Redirigiendo al login...');
       setTimeout(() => navigate('/login'), 2000);
-    } catch {
-      setError('Error al registrar. El email podría ya estar en uso.');
+    } catch (err: any) {
+      if (err.response) {
+        // El servidor respondió con un error (400, 401, 500, etc.)
+        setError(`Error del servidor: ${err.response.data?.message || err.response.statusText || 'Error desconocido'}`);
+      } else if (err.request) {
+        // La petición se hizo pero no hubo respuesta (CORS o Servidor apagado)
+        setError('No se pudo conectar con el servidor. Verifica tu conexión o posible error de CORS.');
+      } else {
+        setError('Ocurrió un error inesperado al procesar el registro.');
+      }
     } finally {
       setLoading(false);
     }
