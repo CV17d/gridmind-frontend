@@ -82,8 +82,12 @@ export default function DevicesPage() {
                     <td>{d.type}</td>
                     <td>{d.powerRating}W</td>
                     <td style={{ color: 'var(--accent-blue)' }}>{d.esp32Id}</td>
-                    <td style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontFamily: 'monospace' }}>
-                      {d.apiKey?.substring(0, 16)}...
+                    <td
+                      style={{ color: 'var(--accent-yellow)', fontSize: '0.75rem', fontFamily: 'monospace', cursor: 'pointer' }}
+                      title="Clic para copiar"
+                      onClick={() => { navigator.clipboard.writeText(d.apiKey); alert('✅ API Key copiada!'); }}
+                    >
+                      {d.apiKey}
                     </td>
                   </tr>
                 ))}
