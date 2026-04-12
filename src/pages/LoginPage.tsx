@@ -11,7 +11,6 @@ export default function LoginPage() {
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  // Si ya está logueado, lo redirigimos al dashboard inmediatamente sin sumar al historial
   if (isAuthenticated) {
     return <Navigate to="/" replace />;
   }
@@ -23,7 +22,6 @@ export default function LoginPage() {
     try {
       const res = await loginUser(email, password);
       login(res.data.token || res.data, email);
-      // Usar replace: true borra el login del historial, así que el botón "Atrás" no vuelve a esta pantalla
       navigate('/', { replace: true });
     } catch {
       setError('Credenciales incorrectas. Verifica tu email y contraseña.');
@@ -33,48 +31,78 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <div className="auth-logo">
-          <span className="icon">⚡</span>
-          <h1>GridMind</h1>
-          <p>Gestión Inteligente de Energía</p>
-        </div>
+    <div className="login-page-wrapper">
 
-        {error && <div className="error-message">{error}</div>}
+      {/* --- LOGO SUPERIOR --- */}
+      <div className="login-brand-header">
+        <svg className="brand-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" fill="currentColor" />
+        </svg>
+        <span className="brand-text">GridMind</span>
+      </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label className="form-label">Email</label>
+      {/* --- TÍTULOS --- */}
+      <div className="login-title-section">
+        <h1 className="login-h1">Bienvenido de nuevo</h1>
+        <p className="login-subtitle">Gestión Inteligente de Energía</p>
+      </div>
+
+      {error && <div className="login-error-toast">{error}</div>}
+
+      {/* --- CARD DEL FORMULARIO --- */}
+      <div className="login-form-card">
+        <form onSubmit={handleSubmit} className="login-form">
+
+          <div className="login-input-group">
+            <label className="login-label">EMAIL</label>
             <input
               type="email"
-              className="form-input"
-              placeholder="tu@email.com"
+              className="login-input"
+              placeholder="usuario@empresa.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
-          <div className="form-group">
-            <label className="form-label">Contraseña</label>
+
+          <div className="login-input-group">
+            <div className="login-label-row">
+              <label className="login-label">CONTRASEÑA</label>
+              <Link to="/forgot-password" className="login-forgot-link">¿OLVIDASTE TU CONTRASEÑA?</Link>
+            </div>
             <input
               type="password"
-              className="form-input"
+              className="login-input"
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
-          <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? '⏳ Ingresando...' : '🔐 Iniciar Sesión'}
+
+          <button type="submit" className="login-submit-button" disabled={loading}>
+            {loading ? 'Ingresando...' : 'Iniciar Sesión'}
           </button>
         </form>
+      </div>
 
-        <div className="auth-footer">
-          ¿No tienes cuenta? <Link to="/register">Regístrate aquí</Link>
+      {/* --- TEXTO DE REGISTRO EXTERNO --- */}
+      <div className="login-register-prompt">
+        ¿No tienes cuenta? <Link to="/register">Regístrate aquí</Link>
+      </div>
+
+      {/* --- FOOTER INFERIOR --- */}
+      <div className="login-page-footer">
+        <div className="footer-mini-links">
+          <Link to="#">PRIVACIDAD</Link>
+          <Link to="#">TÉRMINOS</Link>
+          <Link to="#">SOPORTE</Link>
+        </div>
+        <div className="footer-copyright">
+          © 2026 GRIDMIND - GESTIÓN INTELIGENTE DE ENERGÍA
         </div>
       </div>
+
     </div>
   );
 }

@@ -34,6 +34,12 @@ export const loginUser = (email: string, password: string) =>
 export const registerUser = (name: string, email: string, password: string) =>
   api.post('/api/v1/users/register', { name, email, password });
 
+export const forgotPassword = (email: string) => 
+  api.post('/api/v1/users/forgot-password', { email });
+
+export const resetPassword = (token: string, newPassword: string) => 
+  api.post('/api/v1/users/reset-password', { token, newPassword });
+
 // --- Devices ---
 export const getDevices = () => api.get('/api/v1/devices');
 export const createDevice = (device: { name: string; type: string; powerRating: number; esp32Id: string }) =>
