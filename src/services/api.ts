@@ -29,37 +29,37 @@ api.interceptors.response.use(
 
 // --- Auth ---
 export const loginUser = (email: string, password: string) =>
-  api.post('/api/users/login', { email, password });
+  api.post('/api/v1/users/login', { email, password });
 
 export const registerUser = (name: string, email: string, password: string) =>
-  api.post('/api/users/register', { name, email, password });
+  api.post('/api/v1/users/register', { name, email, password });
 
 // --- Devices ---
-export const getDevices = () => api.get('/api/devices');
+export const getDevices = () => api.get('/api/v1/devices');
 export const createDevice = (device: { name: string; type: string; powerRating: number; esp32Id: string }) =>
-  api.post('/api/devices', device);
+  api.post('/api/v1/devices', device);
 
 // --- Energy Consumption ---
 export const getEnergyByDevice = (deviceId: number) =>
-  api.get(`/api/energy/${deviceId}`);
+  api.get(`/api/v1/energy/${deviceId}`);
 
 // --- Analytics ---
-export const getDailyAnalytics = () => api.get('/api/analytics/daily');
+export const getDailyAnalytics = () => api.get('/api/v1/analytics/daily');
 
 // --- Bills ---
 export const uploadBill = (file: File) => {
   const formData = new FormData();
   formData.append('file', file);
-  return api.post('/api/bills/upload', formData, {
+  return api.post('/api/v1/bills/upload', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
 };
 
-export const getMyBills = () => api.get('/api/bills');
+export const getMyBills = () => api.get('/api/v1/bills');
 
 // --- Alerts ---
-export const getAlerts = () => api.get('/api/alerts');
-export const getUnreadCount = () => api.get('/api/alerts/unread-count');
-export const markAlertAsRead = (alertId: number) => api.patch(`/api/alerts/${alertId}/read`);
+export const getAlerts = () => api.get('/api/v1/alerts');
+export const getUnreadCount = () => api.get('/api/v1/alerts/unread-count');
+export const markAlertAsRead = (alertId: number) => api.patch(`/api/v1/alerts/${alertId}/read`);
 
 export default api;

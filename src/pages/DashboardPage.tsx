@@ -37,7 +37,7 @@ export default function DashboardPage() {
   // WebSocket real-time connection
   useEffect(() => {
     const apiUrl = import.meta.env.VITE_API_URL || 'https://gridmind-backend.onrender.com';
-    const wsUrl = apiUrl.replace('https://', 'wss://').replace('http://', 'ws://') + '/ws';
+    const wsUrl = apiUrl.replace('https://', 'wss://').replace('http://', 'ws://') + '/api/v1/ws';
     
     const client = new Client({
       brokerURL: wsUrl,

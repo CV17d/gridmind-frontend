@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { loginUser } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
@@ -8,8 +8,13 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  // Si ya está logueado, lo redirigimos al dashboard inmediatamente sin sumar al historial
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -18,7 +23,8 @@ export default function LoginPage() {
     try {
       const res = await loginUser(email, password);
       login(res.data.token || res.data, email);
-      navigate('/');
+      // Usar replace: true borra el login del historial, así que el botón "Atrás" no vuelve a esta pantalla
+      navigate('/', { replace: true });
     } catch {
       setError('Credenciales incorrectas. Verifica tu email y contraseña.');
     } finally {
