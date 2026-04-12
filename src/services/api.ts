@@ -56,6 +56,7 @@ export const uploadBill = (file: File) => {
 };
 
 export const getMyBills = () => api.get('/api/v1/bills');
+export const getBillImage = (id: number) => api.get(`/api/v1/bills/${id}/image`, { responseType: 'blob' });
 
 // --- Alerts ---
 export const getAlerts = () => api.get('/api/v1/alerts');

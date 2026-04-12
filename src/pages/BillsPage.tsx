@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { uploadBill, getMyBills } from '../services/api';
+import { uploadBill, getMyBills, getBillImage } from '../services/api';
 import { useEffect } from 'react';
 
 interface Bill {
@@ -19,6 +19,11 @@ export default function BillsPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // States for Modal
+  const [selectedBill, setSelectedBill] = useState<Bill | null>(null);
+  const [selectedBillImage, setSelectedBillImage] = useState<string | null>(null);
+  const [imageLoading, setImageLoading] = useState(false);
+
   useEffect(() => {
     getMyBills().then(res => setBills(res.data || [])).catch(console.error).finally(() => setLoading(false));
   }, []);
@@ -35,6 +40,29 @@ export default function BillsPage() {
       setBills(billsRes.data || []);
     } catch (err) { console.error(err); }
     finally { setUploading(false); }
+  };
+
+  const handleBillClick = async (bill: Bill) => {
+    setSelectedBill(bill);
+    setSelectedBillImage(null);
+    setImageLoading(true);
+    try {
+      const res = await getBillImage(bill.id);
+      const imageUrl = URL.createObjectURL(res.data);
+      setSelectedBillImage(imageUrl);
+    } catch (err) {
+      console.error("Error cargando la foto", err);
+    } finally {
+      setImageLoading(false);
+    }
+  };
+
+  const closeModal = () => {
+    setSelectedBill(null);
+    if (selectedBillImage) {
+      URL.revokeObjectURL(selectedBillImage);
+      setSelectedBillImage(null);
+    }
   };
 
   if (loading) return <div className="loading-spinner"><div className="spinner" /></div>;
@@ -109,7 +137,7 @@ export default function BillsPage() {
               </thead>
               <tbody>
                 {bills.map(b => (
-                  <tr key={b.id}>
+                  <tr key={b.id} onClick={() => handleBillClick(b)} className="clickable-row" style={{ cursor: 'pointer' }}>
                     <td>{new Date(b.uploadedAt).toLocaleDateString()}</td>
                     <td style={{ color: 'var(--accent-green)', fontWeight: 600 }}>{b.totalKwh} kWh</td>
                     <td style={{ color: 'var(--accent-blue)', fontWeight: 600 }}>${b.totalAmount?.toLocaleString()}</td>
@@ -120,6 +148,49 @@ export default function BillsPage() {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL EXPANSIVO DE FACTURA */}
+      {selectedBill && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-content bill-modal split-layout" onClick={e => e.stopPropagation()}>
+            <button className="modal-close" onClick={closeModal}>✕</button>
+            
+            <div className="modal-left">
+              {imageLoading ? (
+                <div className="loading-spinner"><div className="spinner" style={{ borderColor: 'var(--bg-card)' }}></div></div>
+              ) : selectedBillImage ? (
+                <img src={selectedBillImage} alt="Factura escaneada" className="bill-detail-image" />
+              ) : (
+                <div className="error-placeholder" style={{ color: 'var(--text-muted)' }}>No se pudo recuperar la imagen original</div>
+              )}
+            </div>
+
+            <div className="modal-right">
+              <h3 style={{ marginBottom: 20 }}>Análisis de Factura</h3>
+              <div className="stat-grid" style={{ marginBottom: 24 }}>
+                <div className="stat-card green">
+                  <div className="stat-label">Consumo Detectado</div>
+                  <div className="stat-value">{selectedBill.totalKwh} kWh</div>
+                </div>
+                <div className="stat-card blue">
+                  <div className="stat-label">Monto a Pagar</div>
+                  <div className="stat-value">${selectedBill.totalAmount?.toLocaleString()}</div>
+                </div>
+              </div>
+              
+              <div className="advice full-advice">
+                <strong>💡 Recomendación Completa de la IA:</strong>
+                <p style={{ marginTop: 12, whiteSpace: 'pre-wrap', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
+                  {selectedBill.aiRecommendations}
+                </p>
+              </div>
+              <p style={{ marginTop: 24, fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                Escaneada el: {new Date(selectedBill.uploadedAt).toLocaleString()}
+              </p>
+            </div>
           </div>
         </div>
       )}
