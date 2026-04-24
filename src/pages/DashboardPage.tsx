@@ -46,7 +46,28 @@ export default function DashboardPage() {
         setIsLive(true);
         client.subscribe('/topic/energy', (message) => {
           const data = JSON.parse(message.body) as LiveReading;
+          
+          // 1. Actualizar la lista de lecturas recientes (tabla y monitor)
           setLiveReadings(prev => [data, ...prev].slice(0, 10));
+
+          // 2. Actualizar la gráfica diaria y el total en tiempo real
+          setChartData(prevData => {
+            const today = new Date().toISOString().split('T')[0];
+            const updatedData = [...prevData];
+            const todayIndex = updatedData.findIndex(d => d.date === today);
+
+            if (todayIndex !== -1) {
+              // Si ya existe el día de hoy, le sumamos el nuevo consumo
+              updatedData[todayIndex] = {
+                ...updatedData[todayIndex],
+                totalKwh: updatedData[todayIndex].totalKwh + data.consumption
+              };
+            } else {
+              // Si es un día nuevo, lo agregamos a la lista
+              updatedData.push({ date: today, totalKwh: data.consumption });
+            }
+            return updatedData;
+          });
         });
       },
       onDisconnect: () => setIsLive(false),
@@ -90,7 +111,6 @@ export default function DashboardPage() {
       <div className="card" style={{ marginBottom: 24 }}>
         <div className="card-header">
           <span className="card-title">📊 Consumo Diario (kWh)</span>
-          {isLive && <span className="live-indicator"><span className="live-dot" /> EN VIVO</span>}
         </div>
         <ResponsiveContainer width="100%" height={300}>
           <AreaChart data={chartData}>
@@ -109,6 +129,37 @@ export default function DashboardPage() {
               itemStyle={{ color: '#00ff88' }}
             />
             <Area type="monotone" dataKey="totalKwh" stroke="#00ff88" strokeWidth={2} fill="url(#colorKwh)" />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="card" style={{ marginBottom: 24 }}>
+        <div className="card-header">
+          <span className="card-title">📉 Monitor en Tiempo Real (Segundos)</span>
+          {isLive && <span className="live-indicator"><span className="live-dot" /> EN VIVO</span>}
+        </div>
+        <ResponsiveContainer width="100%" height={250}>
+          <AreaChart data={[...liveReadings].reverse()}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+            <XAxis 
+              dataKey="timestamp" 
+              stroke="#64748b" 
+              fontSize={10} 
+              tickFormatter={(time) => new Date(time).toLocaleTimeString()} 
+            />
+            <YAxis stroke="#64748b" fontSize={12} unit=" kWh" />
+            <Tooltip
+              contentStyle={{ background: '#1a2234', border: '1px solid #1e293b', borderRadius: 8 }}
+              labelFormatter={(label) => new Date(label).toLocaleTimeString()}
+            />
+            <Area 
+              type="stepAfter" 
+              dataKey="consumption" 
+              stroke="#3cecb0" 
+              fill="#3cecb0" 
+              fillOpacity={0.1} 
+              isAnimationActive={false}
+            />
           </AreaChart>
         </ResponsiveContainer>
       </div>

@@ -15,11 +15,16 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Interceptor: Si el servidor responde 401/403, redirige al login
+// Interceptor: Si el servidor responde 401/403, redirige al login (excepto en rutas de auth)
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401 || error.response?.status === 403) {
+    const isAuthRequest = error.config?.url?.includes('/api/v1/users/login') || 
+                         error.config?.url?.includes('/api/v1/users/register') ||
+                         error.config?.url?.includes('/api/v1/users/forgot-password') ||
+                         error.config?.url?.includes('/api/v1/users/reset-password');
+
+    if ((error.response?.status === 401 || error.response?.status === 403) && !isAuthRequest) {
       localStorage.removeItem('gridmind_token');
       window.location.href = '/login';
     }
