@@ -137,7 +137,9 @@ export default function DashboardPage() {
           </div>
           <div className="stat-label">Predicción 30 días</div>
           <div className="stat-value" style={{ color: '#a855f7' }}>
-            {forecast?.predicted_next_30_days ? <>{forecast.predicted_next_30_days.toFixed(2)} <span style={{ fontSize: '12px', opacity: 0.7 }}>kWh</span></> : '--'}
+            {(forecast?.predicted_next_30_days !== undefined && forecast?.predicted_next_30_days !== null) ? (
+              <>{forecast.predicted_next_30_days.toFixed(2)} <span style={{ fontSize: '12px', opacity: 0.7 }}>kWh</span></>
+            ) : '--'}
           </div>
         </div>
       </div>
