@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { getDailyAnalytics, getUnreadCount, getDevices, getForecast, getComparison } from '../services/api';
+import { getDailyAnalytics, getDevices, getForecast, getComparison } from '../services/api';
 import { Client } from '@stomp/stompjs';
-import { Zap, Cpu, Calendar, Bell, Satellite, Wifi, Activity, Brain, Info, Lightbulb, TrendingDown, AlertTriangle } from 'lucide-react';
+import { Zap, Cpu, Calendar, Satellite, Brain, Info, Lightbulb, TrendingDown } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 interface DailyData { date: string; totalKwh: number; }
@@ -10,7 +10,6 @@ interface LiveReading { esp32Id: string; consumption: number; voltage?: number; 
 
 export default function DashboardPage() {
   const [chartData, setChartData] = useState<DailyData[]>([]);
-  const [unread, setUnread] = useState(0);
   const [deviceCount, setDeviceCount] = useState(0);
   const [liveReadings, setLiveReadings] = useState<LiveReading[]>([]);
   const [isLive, setIsLive] = useState(false);
@@ -24,15 +23,13 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [analyticsRes, unreadRes, devicesRes, forecastRes, comparisonRes] = await Promise.all([
+        const [analyticsRes, devicesRes, forecastRes, comparisonRes] = await Promise.all([
           getDailyAnalytics(),
-          getUnreadCount(),
           getDevices(),
           getForecast(),
           getComparison()
         ]);
         setChartData(analyticsRes.data || []);
-        setUnread(unreadRes.data?.unreadAlerts || 0);
         setDeviceCount(Array.isArray(devicesRes.data) ? devicesRes.data.length : 0);
         setForecast(forecastRes.data);
         setComparison(comparisonRes.data);
@@ -78,7 +75,6 @@ export default function DashboardPage() {
         client.subscribe('/topic/alerts', (message) => {
           try {
             const alertData = JSON.parse(message.body);
-            setUnread(prev => prev + 1);
             toast.error(alertData.message, {
               duration: 6000,
               icon: '⚡',
