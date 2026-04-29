@@ -21,7 +21,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const res = await loginUser(email, password);
-      login(res.data.token || res.data, email);
+      login(res.data.token, email, res.data.name);
       navigate('/', { replace: true });
     } catch {
       setError('Credenciales incorrectas. Verifica tu email y contraseña.');

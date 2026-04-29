@@ -45,6 +45,14 @@ export const forgotPassword = (email: string) =>
 export const resetPassword = (token: string, newPassword: string) => 
   api.post('/api/v1/users/reset-password', { token, newPassword });
 
+export const getUserProfile = () => api.get('/api/v1/users/me');
+
+export const updateSettings = (data: { name?: string; electricityRate?: number; alertThreshold?: number }) =>
+  api.put('/api/v1/users/settings', data);
+
+export const changePassword = (currentPassword: string, newPassword: string) =>
+  api.put('/api/v1/users/change-password', { currentPassword, newPassword });
+
 // --- Devices ---
 export const getDevices = () => api.get('/api/v1/devices');
 export const createDevice = (device: { name: string; type: string; powerRating: number; esp32Id: string }) =>
@@ -56,6 +64,8 @@ export const getEnergyByDevice = (deviceId: number) =>
 
 // --- Analytics ---
 export const getDailyAnalytics = () => api.get('/api/v1/analytics/daily');
+export const getForecast = () => api.get('/api/v1/analytics/forecast');
+export const getComparison = () => api.get('/api/v1/analytics/comparison');
 
 // --- Bills ---
 export const uploadBill = (file: File) => {
