@@ -5,7 +5,7 @@ import { Client } from '@stomp/stompjs';
 import { Zap, Cpu, Calendar, Bell, Satellite, Wifi, Activity } from 'lucide-react';
 
 interface DailyData { date: string; totalKwh: number; }
-interface LiveReading { esp32Id: string; consumption: number; timestamp: string; }
+interface LiveReading { esp32Id: string; consumption: number; voltage?: number; current?: number; power?: number; timestamp: string; }
 
 export default function DashboardPage() {
   const [chartData, setChartData] = useState<DailyData[]>([]);
@@ -96,7 +96,7 @@ export default function DashboardPage() {
             <div className="stat-unit">KWH</div>
           </div>
           <div className="stat-label">Consumo Total</div>
-          <div className="stat-value">{totalKwh.toFixed(1)}</div>
+          <div className="stat-value">{totalKwh.toFixed(3)}</div>
           <div className="stat-subtext">Active load</div>
         </div>
 
@@ -211,12 +211,12 @@ export default function DashboardPage() {
             <div className="pulse-bars-wrap">
               {(() => {
                 const recentReadings = liveReadings.slice(0, 12);
-                const maxVal = Math.max(...recentReadings.map(r => r.consumption), 1); // Evitar división por cero
+                const maxVal = Math.max(...recentReadings.map(r => r.power || 0), 100); // Base de 100W para escala
 
                 return [...Array(12)].map((_, i) => {
                   const reading = liveReadings[11 - i];
-                  // Escalado dinámico relativo al máximo actual
-                  const height = reading ? Math.max((reading.consumption / maxVal) * 100, 5) : 5;
+                  // Escalado dinámico relativo al máximo actual (usando Power)
+                  const height = reading ? Math.max(((reading.power || 0) / maxVal) * 100, 5) : 5;
                   const isLatest = i === 11;
 
                   return (
@@ -233,7 +233,7 @@ export default function DashboardPage() {
 
             <div className="pulse-current-val">
               <div>
-                <span className="pulse-number">{lastConsumption.toFixed(1)}</span>
+                <span className="pulse-number">{(liveReadings[0]?.power || 0).toFixed(1)}</span>
                 <span className="pulse-unit">WATTS</span>
               </div>
               <div style={{ textAlign: 'right' }}>
@@ -286,7 +286,9 @@ export default function DashboardPage() {
               <thead>
                 <tr>
                   <th>DISPOSITIVO</th>
-                  <th>ESTADO</th>
+                  <th>VOLTAJE</th>
+                  <th>CORRIENTE</th>
+                  <th>POTENCIA</th>
                   <th>CONSUMO</th>
                   <th>TIMESTAMP</th>
                 </tr>
@@ -300,7 +302,9 @@ export default function DashboardPage() {
                         {r.esp32Id}
                       </div>
                     </td>
-                    <td><span className="live-badge">ACTIVE</span></td>
+                    <td style={{ color: 'var(--accent-blue)', fontWeight: 500 }}>{r.voltage?.toFixed(1) || '0.0'} V</td>
+                    <td style={{ color: 'var(--accent-yellow)', fontWeight: 500 }}>{r.current?.toFixed(2) || '0.00'} A</td>
+                    <td style={{ color: 'var(--accent-red)', fontWeight: 500 }}>{r.power?.toFixed(1) || '0.0'} W</td>
                     <td style={{ color: 'var(--accent-green)', fontWeight: 600 }}>{r.consumption.toFixed(3)} kWh</td>
                     <td style={{ color: 'var(--text-muted)' }}>{new Date(r.timestamp).toLocaleTimeString()}</td>
                   </tr>
