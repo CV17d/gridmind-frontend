@@ -1,6 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { uploadBill, getMyBills, getBillImage } from '../services/api';
-import { useEffect } from 'react';
+import { X, Info, Zap, Activity, Maximize2 } from 'lucide-react';
 
 interface Bill {
   id: number;
@@ -23,6 +23,7 @@ export default function BillsPage() {
   const [selectedBill, setSelectedBill] = useState<Bill | null>(null);
   const [selectedBillImage, setSelectedBillImage] = useState<string | null>(null);
   const [imageLoading, setImageLoading] = useState(false);
+  const [fullScreenImage, setFullScreenImage] = useState<string | null>(null);
 
   useEffect(() => {
     getMyBills().then(res => setBills(res.data || [])).catch(console.error).finally(() => setLoading(false));
@@ -129,20 +130,20 @@ export default function BillsPage() {
             <table>
               <thead>
                 <tr>
-                  <th>Fecha</th>
-                  <th>kWh</th>
-                  <th>Monto</th>
-                  <th>Recomendación</th>
+                  <th className="col-date">Fecha</th>
+                  <th className="col-kwh">kWh</th>
+                  <th className="col-amount">Monto</th>
+                  <th className="col-advice">Recomendación GridMind</th>
                 </tr>
               </thead>
               <tbody>
                 {bills.map(b => (
-                  <tr key={b.id} onClick={() => handleBillClick(b)} className="clickable-row" style={{ cursor: 'pointer' }}>
+                  <tr key={b.id} onClick={() => handleBillClick(b)} className="clickable-row">
                     <td>{new Date(b.uploadedAt).toLocaleDateString()}</td>
                     <td style={{ color: 'var(--accent-green)', fontWeight: 600 }}>{b.totalKwh} kWh</td>
                     <td style={{ color: 'var(--accent-blue)', fontWeight: 600 }}>${b.totalAmount?.toLocaleString()}</td>
-                    <td style={{ maxWidth: 300, color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-                      {b.aiRecommendations?.substring(0, 100)}...
+                    <td style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                      {b.aiRecommendations}
                     </td>
                   </tr>
                 ))}
@@ -152,44 +153,103 @@ export default function BillsPage() {
         </div>
       )}
 
-      {/* MODAL EXPANSIVO DE FACTURA */}
-      {selectedBill && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content bill-modal split-layout" onClick={e => e.stopPropagation()}>
-            <button className="modal-close" onClick={closeModal}>✕</button>
-            
-            <div className="modal-left">
-              {imageLoading ? (
-                <div className="loading-spinner"><div className="spinner" style={{ borderColor: 'var(--bg-card)' }}></div></div>
-              ) : selectedBillImage ? (
-                <img src={selectedBillImage} alt="Factura escaneada" className="bill-detail-image" />
-              ) : (
-                <div className="error-placeholder" style={{ color: 'var(--text-muted)' }}>No se pudo recuperar la imagen original</div>
-              )}
-            </div>
+      {/* VISOR DE IMAGEN A PANTALLA COMPLETA */}
+      {fullScreenImage && (
+        <div 
+          className="drawer-overlay" 
+          style={{ zIndex: 10000, justifyContent: 'center', alignItems: 'center', cursor: 'zoom-out' }}
+          onClick={() => setFullScreenImage(null)}
+        >
+          <img 
+            src={fullScreenImage} 
+            alt="Factura Full" 
+            style={{ maxWidth: '95vw', maxHeight: '95vh', objectFit: 'contain', borderRadius: '8px', boxShadow: '0 0 50px rgba(0,0,0,0.8)' }} 
+          />
+          <button 
+            onClick={() => setFullScreenImage(null)}
+            style={{ position: 'absolute', top: 30, right: 30, background: 'rgba(0,0,0,0.5)', border: 'none', color: '#fff', borderRadius: '50%', width: 44, height: 44, cursor: 'pointer' }}
+          >
+            <X size={24} />
+          </button>
+        </div>
+      )}
 
-            <div className="modal-right">
-              <h3 style={{ marginBottom: 20 }}>Análisis de Factura</h3>
-              <div className="stat-grid" style={{ marginBottom: 24 }}>
-                <div className="stat-card green">
-                  <div className="stat-label">Consumo Detectado</div>
-                  <div className="stat-value">{selectedBill.totalKwh} kWh</div>
-                </div>
-                <div className="stat-card blue">
-                  <div className="stat-label">Monto a Pagar</div>
-                  <div className="stat-value">${selectedBill.totalAmount?.toLocaleString()}</div>
-                </div>
-              </div>
-              
-              <div className="advice full-advice">
-                <strong>💡 Recomendación Completa de la IA:</strong>
-                <p style={{ marginTop: 12, whiteSpace: 'pre-wrap', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
-                  {selectedBill.aiRecommendations}
+      {/* SIDE DRAWER DE FACTURA */}
+      {selectedBill && (
+        <div className="drawer-overlay" onClick={closeModal}>
+          <div className="side-drawer" onClick={e => e.stopPropagation()}>
+            <div className="drawer-header">
+              <div className="drawer-title-group">
+                <h3 style={{ fontSize: '16px', fontWeight: 700 }}>Detalle de Factura</h3>
+                <p style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                  ID: #{selectedBill.id} • {new Date(selectedBill.uploadedAt).toLocaleDateString()}
                 </p>
               </div>
-              <p style={{ marginTop: 24, fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                Escaneada el: {new Date(selectedBill.uploadedAt).toLocaleString()}
-              </p>
+              <button 
+                onClick={closeModal}
+                style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
+              >
+                <X size={24} />
+              </button>
+            </div>
+            
+            <div className="drawer-content">
+              {/* Imagen de la factura */}
+              <div 
+                className="drawer-image-container" 
+                style={{ cursor: 'zoom-in', position: 'relative' }}
+                onClick={() => selectedBillImage && setFullScreenImage(selectedBillImage)}
+              >
+                {imageLoading ? (
+                  <div className="spinner" style={{ width: '30px', height: '30px' }} />
+                ) : selectedBillImage ? (
+                  <>
+                    <img src={selectedBillImage} alt="Factura" />
+                    <div style={{ position: 'absolute', bottom: 12, right: 12, background: 'rgba(0,0,0,0.6)', padding: 6, borderRadius: 6, color: '#fff', display: 'flex', alignItems: 'center', gap: 6, fontSize: '10px' }}>
+                      <Maximize2 size={12} />
+                      CLIC PARA AGRANDAR
+                    </div>
+                  </>
+                ) : (
+                  <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>Error al cargar imagen</p>
+                )}
+              </div>
+
+              {/* Estadísticas rápidas */}
+              <div className="drawer-section">
+                <div className="drawer-section-title">
+                  <Info size={14} /> Resumen de Análisis
+                </div>
+                <div className="drawer-stats">
+                  <div className="mini-card">
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <Zap size={10} color="var(--accent-green)" />
+                      Consumo
+                    </label>
+                    <span>{selectedBill.totalKwh} kWh</span>
+                  </div>
+                  <div className="mini-card">
+                    <label>Monto</label>
+                    <span>${selectedBill.totalAmount?.toLocaleString()}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Recomendación de IA */}
+              <div className="drawer-section">
+                <div className="drawer-section-title">
+                  <Activity size={14} /> Recomendación IA
+                </div>
+                <div className="advice-box">
+                  {selectedBill.aiRecommendations}
+                </div>
+              </div>
+
+              <div style={{ marginTop: 'auto', padding: '20px 0', borderTop: '1px solid var(--border-color)' }}>
+                <button className="btn btn-primary" style={{ width: '100%' }} onClick={closeModal}>
+                  Cerrar Panel
+                </button>
+              </div>
             </div>
           </div>
         </div>
