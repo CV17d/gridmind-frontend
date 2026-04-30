@@ -262,17 +262,28 @@ export default function DashboardPage() {
         </div>
         <div className="table-container">
           <table>
-            <thead><tr><th>DISPOSITIVO</th><th>POTENCIA (W)</th><th>CONSUMO (kWh)</th><th>HORA LOCAL</th></tr></thead>
-            <tbody>
-              {liveReadings.map((r, i) => (
-                <tr key={i}>
-                  <td>{r.esp32Id}</td>
-                  <td style={{ color: 'var(--accent-red)' }}>{r.power?.toFixed(1)} W</td>
-                  <td style={{ color: 'var(--accent-green)' }}>{r.consumption.toFixed(3)} kWh</td>
-                  <td>{new Date(r.timestamp).toLocaleTimeString()}</td>
+            <thead>
+                <tr>
+                  <th style={{ padding: '12px', textAlign: 'left', opacity: 0.7 }}>Dispositivo</th>
+                  <th style={{ padding: '12px', textAlign: 'left', opacity: 0.7 }}>Voltaje</th>
+                  <th style={{ padding: '12px', textAlign: 'left', opacity: 0.7 }}>Corriente</th>
+                  <th style={{ padding: '12px', textAlign: 'left', opacity: 0.7 }}>Potencia</th>
+                  <th style={{ padding: '12px', textAlign: 'left', opacity: 0.7 }}>Consumo</th>
+                  <th style={{ padding: '12px', textAlign: 'left', opacity: 0.7 }}>Hora Local</th>
                 </tr>
-              ))}
-            </tbody>
+              </thead>
+              <tbody>
+                {liveReadings.map((reading, idx) => (
+                  <tr key={idx} style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                    <td style={{ padding: '12px' }}>{reading.deviceName}</td>
+                    <td style={{ padding: '12px' }}>{reading.voltage?.toFixed(1) || '0.0'} V</td>
+                    <td style={{ padding: '12px' }}>{reading.current?.toFixed(2) || '0.00'} A</td>
+                    <td style={{ padding: '12px', color: '#3b82f6', fontWeight: 'bold' }}>{reading.power?.toFixed(1) || '0.0'} W</td>
+                    <td style={{ padding: '12px', color: '#10b981' }}>{reading.consumption?.toFixed(4) || '0.0000'} kWh</td>
+                    <td style={{ padding: '12px', opacity: 0.8 }}>{new Date(reading.timestamp).toLocaleTimeString()}</td>
+                  </tr>
+                ))}
+              </tbody>
           </table>
         </div>
       </div>
