@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { registerUser } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { Zap } from 'lucide-react';
 
 export default function RegisterPage() {
   const [name, setName] = useState('');
@@ -51,9 +52,7 @@ export default function RegisterPage() {
 
       {/* --- LOGO SUPERIOR --- */}
       <div className="login-brand-header">
-        <svg className="brand-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" fill="currentColor" />
-        </svg>
+        <Zap size={28} fill="#3cecb0" color="#3cecb0" style={{ filter: 'drop-shadow(0 0 8px rgba(60, 236, 176, 0.4))' }} />
         <span className="brand-text">GridMind</span>
       </div>
 

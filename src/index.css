@@ -804,8 +804,8 @@ tr.clickable-row:hover {
 }
 
 .login-brand-header {
-  position: absolute;
-  top: 40px; /* Anclado arriba */
+  margin-top: 20px;
+  margin-bottom: 40px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -951,8 +951,8 @@ tr.clickable-row:hover {
 }
 
 .login-page-footer {
-  position: absolute;
-  bottom: 40px;
+  margin-top: 60px;
+  margin-bottom: 40px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1248,10 +1248,8 @@ tr.clickable-row:hover {
 
 /* Panoramic Footer */
 .register-panoramic-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  width: 100%;
+  margin-top: 60px;
   display: flex;
   justify-content: space-between;
   align-items: center;
