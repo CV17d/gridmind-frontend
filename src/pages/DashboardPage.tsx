@@ -276,8 +276,8 @@ export default function DashboardPage() {
                 {liveReadings.map((reading, idx) => (
                   <tr key={idx} style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
                     <td style={{ padding: '12px' }}>{reading.esp32Id}</td>
-                    <td style={{ padding: '12px' }}>{reading.voltage?.toFixed(1) || '0.0'} V</td>
-                    <td style={{ padding: '12px' }}>{reading.current?.toFixed(2) || '0.00'} A</td>
+                    <td style={{ padding: '12px', color: '#a855f7' }}>{reading.voltage?.toFixed(1) || '0.0'} V</td>
+                    <td style={{ padding: '12px', color: '#f59e0b' }}>{reading.current?.toFixed(2) || '0.00'} A</td>
                     <td style={{ padding: '12px', color: '#3b82f6', fontWeight: 'bold' }}>{reading.power?.toFixed(1) || '0.0'} W</td>
                     <td style={{ padding: '12px', color: '#10b981' }}>{reading.consumption?.toFixed(4) || '0.0000'} kWh</td>
                     <td style={{ padding: '12px', opacity: 0.8 }}>{new Date(reading.timestamp).toLocaleTimeString()}</td>
