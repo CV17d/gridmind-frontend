@@ -144,7 +144,10 @@ function AppLayout() {
     <div className="app-layout">
       <aside className="sidebar">
         <div className="sidebar-logo">
-          <h1>GridMind</h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Zap size={28} fill="var(--accent-green)" color="var(--accent-green)" style={{ filter: 'drop-shadow(0 0 8px var(--accent-green))' }} />
+            <h1 style={{ margin: 0 }}>GridMind</h1>
+          </div>
           <p>PRECISIÓN TÉCNICA</p>
         </div>
 
