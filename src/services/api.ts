@@ -84,4 +84,7 @@ export const getAlerts = () => api.get('/api/v1/alerts');
 export const getUnreadCount = () => api.get('/api/v1/alerts/unread-count');
 export const markAlertAsRead = (alertId: number) => api.patch(`/api/v1/alerts/${alertId}/read`);
 
+// --- Advisor ---
+export const compareModels = (question: string) => api.post('/api/v1/advisor/compare', { question });
+
 export default api;

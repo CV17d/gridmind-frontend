@@ -14,7 +14,8 @@ import {
   Zap, 
   Settings, 
   LifeBuoy, 
-  LogOut 
+  LogOut,
+  Brain
 } from 'lucide-react';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -25,6 +26,7 @@ import AlertsPage from './pages/AlertsPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import SettingsPage from './pages/SettingsPage';
+import AdvisorPage from './pages/AdvisorPage';
 import './index.css';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -43,6 +45,7 @@ function AppLayout() {
       case '/devices': return 'Gestión de Activos';
       case '/bills': return 'Inteligencia de Facturación';
       case '/alerts': return 'Monitor de Alertas';
+      case '/advisor': return 'Asesor IA Comparativo';
       default: return 'GridMind Central';
     }
   };
@@ -137,6 +140,7 @@ function AppLayout() {
     { to: '/', icon: <LayoutDashboard size={20} />, label: 'Dashboard' },
     { to: '/devices', icon: <Cpu size={20} />, label: 'Dispositivos' },
     { to: '/bills', icon: <FileText size={20} />, label: 'Facturas IA' },
+    { to: '/advisor', icon: <Brain size={20} />, label: 'Asesor IA' },
     { to: '/alerts', icon: <Bell size={20} />, label: 'Alertas', badge: unread },
   ];
 
@@ -232,6 +236,7 @@ function AppLayout() {
           <Route path="/devices" element={<DevicesPage />} />
           <Route path="/bills" element={<BillsPage />} />
           <Route path="/alerts" element={<AlertsPage />} />
+          <Route path="/advisor" element={<AdvisorPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/support" element={<div>Página de Soporte (Próximamente)</div>} />
         </Routes>
