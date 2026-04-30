@@ -1301,15 +1301,133 @@ tr.clickable-row:hover {
 }
 
 /* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-  .sidebar {
-    display: none;
+@media (max-width: 1024px) {
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
+  
+  .dashboard-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: 280px;
+  }
+
+  .app-layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: calc(var(--sidebar-width) * -1);
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+    z-index: 1000;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
   .main-content {
     margin-left: 0;
     padding: 20px;
+    padding-top: 80px; /* Espacio para el header fijo en movil si fuera necesario */
   }
+
+  .top-header {
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+
+  .header-info h2 {
+    font-size: 20px !important;
+  }
+
+  .header-info p {
+    display: none;
+  }
+
+  .header-actions {
+    gap: 10px;
+  }
+
+  .status-badge {
+    display: none; /* Ocultar en movil para ahorrar espacio */
+  }
+
+  .user-info {
+    display: none;
+  }
+
+  .mobile-menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(60, 236, 176, 0.1);
+    border: 1px solid rgba(60, 236, 176, 0.2);
+    color: var(--accent-green);
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+  }
+
+  .mobile-menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+  }
+
+  .stat-grid {
+    grid-template-columns: 1fr; /* 1 columna en moviles muy pequeños */
+    gap: 15px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  .card-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  /* Hacer las tablas deslizables horizontalmente */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    min-width: 600px;
+  }
+}
+
+/* Ocultar botón de menú en escritorio */
+@media (min-width: 769px) {
+  .mobile-menu-toggle {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
   .stat-grid {
     grid-template-columns: 1fr;
+  }
+
+  .drawer-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .side-drawer {
+    width: 100%;
   }
 }

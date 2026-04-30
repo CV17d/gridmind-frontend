@@ -14,7 +14,9 @@ import {
   Zap, 
   Settings, 
   LifeBuoy, 
-  LogOut
+  LogOut,
+  Menu,
+  X
 } from 'lucide-react';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -133,6 +135,15 @@ function AppLayout() {
     }
   };
 
+  const [unread, setUnread] = useState(0);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    getUnreadCount().then(res => setUnread(res.data)).catch(console.error);
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+
   const navItems = [
     { to: '/', icon: <LayoutDashboard size={20} />, label: 'Dashboard' },
     { to: '/devices', icon: <Cpu size={20} />, label: 'Dispositivos' },
@@ -141,8 +152,11 @@ function AppLayout() {
   ];
 
   return (
-    <div className="app-layout">
-      <aside className="sidebar">
+    <div className={`app-layout ${isMobileMenuOpen ? 'mobile-menu-active' : ''}`}>
+      {/* Overlay para cerrar el menú al hacer clic fuera */}
+      {isMobileMenuOpen && <div className="mobile-menu-overlay" onClick={() => setIsMobileMenuOpen(false)} />}
+      
+      <aside className={`sidebar ${isMobileMenuOpen ? 'open' : ''}`}>
         <div className="sidebar-logo">
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <Zap size={28} fill="var(--accent-green)" color="var(--accent-green)" style={{ filter: 'drop-shadow(0 0 8px var(--accent-green))' }} />
@@ -204,7 +218,10 @@ function AppLayout() {
 
       <main className="main-content">
         <header className="top-header">
-        <div className="header-info">
+          <button className="mobile-menu-toggle" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+          <div className="header-info">
           <h2 style={{ fontSize: '26px', fontWeight: 800, color: 'var(--accent-green)', letterSpacing: '-0.5px' }}>{getPageTitle()}</h2>
           <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Bienvenido de nuevo al centro de control</p>
         </div>
