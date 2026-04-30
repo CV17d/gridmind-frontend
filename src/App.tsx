@@ -38,6 +38,7 @@ function AppLayout() {
   const { logout, userEmail, userName } = useAuth();
   const location = useLocation();
   const [unread, setUnread] = useState(0);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const getPageTitle = () => {
     switch(location.pathname) {
@@ -51,8 +52,9 @@ function AppLayout() {
 
   useEffect(() => {
     getUnreadCount()
-      .then(res => setUnread(res.data?.unreadAlerts || 0))
+      .then(res => setUnread(typeof res.data === 'number' ? res.data : (res.data?.unreadAlerts || 0)))
       .catch(() => {});
+    setIsMobileMenuOpen(false);
   }, [location.pathname]);
 
   const generatePDF = async () => {
@@ -134,15 +136,6 @@ function AppLayout() {
       toast.error("Error al generar el reporte PDF.", { id: loadingToast });
     }
   };
-
-  const [unread, setUnread] = useState(0);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const location = useLocation();
-
-  useEffect(() => {
-    getUnreadCount().then(res => setUnread(res.data)).catch(console.error);
-    setIsMobileMenuOpen(false);
-  }, [location.pathname]);
 
   const navItems = [
     { to: '/', icon: <LayoutDashboard size={20} />, label: 'Dashboard' },
