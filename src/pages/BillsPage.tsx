@@ -34,7 +34,7 @@ export default function BillsPage() {
     setUploading(true);
     setResult(null);
     try {
-      const res = await uploadBill(selectedFile);
+      const res = await uploadBill(selectedFile, provider);
       setResult(res.data);
       setSelectedFile(null);
       const billsRes = await getMyBills();
