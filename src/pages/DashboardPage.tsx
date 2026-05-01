@@ -43,7 +43,7 @@ export default function DashboardPage() {
   }, []);
 
   useEffect(() => {
-    const apiUrl = import.meta.env.VITE_API_URL || 'https://gridmind-backend.onrender.com';
+    const apiUrl = import.meta.env.VITE_API_URL || 'https://gridmind-backend-production.up.railway.app';
     const wsUrl = apiUrl.replace('https://', 'wss://').replace('http://', 'ws://') + '/api/v1/ws';
 
     const client = new Client({
