@@ -27,6 +27,7 @@ import AlertsPage from './pages/AlertsPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import SettingsPage from './pages/SettingsPage';
+import SupportPage from './pages/SupportPage';
 import './index.css';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -246,7 +247,7 @@ function AppLayout() {
           <Route path="/bills" element={<BillsPage />} />
           <Route path="/alerts" element={<AlertsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/support" element={<div>Página de Soporte (Próximamente)</div>} />
+          <Route path="/support" element={<SupportPage />} />
         </Routes>
       </main>
     </div>
