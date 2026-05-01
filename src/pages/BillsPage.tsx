@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { uploadBill, getMyBills, getBillImage } from '../services/api';
 import { X, Info, Zap, Activity, Maximize2 } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 interface Bill {
   id: number;
@@ -33,14 +34,23 @@ export default function BillsPage() {
     if (!selectedFile) return;
     setUploading(true);
     setResult(null);
+    const loadingToast = toast.loading("🤖 La IA está analizando tu factura...");
     try {
       const res = await uploadBill(selectedFile);
       setResult(res.data);
       setSelectedFile(null);
       const billsRes = await getMyBills();
       setBills(billsRes.data || []);
-    } catch (err) { console.error(err); }
-    finally { setUploading(false); }
+      toast.success("¡Análisis completado con éxito!", { id: loadingToast });
+    } catch (err: any) {
+      console.error(err);
+      const errorMsg = err.response?.status === 413 
+        ? "La foto es demasiado pesada. Intenta reducir la calidad o tomarla más lejos." 
+        : "Error al conectar con la IA. Verifica tu conexión.";
+      toast.error(errorMsg, { id: loadingToast });
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleBillClick = async (bill: Bill) => {
