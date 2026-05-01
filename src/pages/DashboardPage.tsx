@@ -109,7 +109,7 @@ export default function DashboardPage() {
             <div className="stat-unit">kWh (Kilovatios-hora)</div>
           </div>
           <div className="stat-label">Consumo Total</div>
-          <div className="stat-value" style={{ color: 'var(--accent-green)' }}>{totalKwh.toFixed(3)} <span style={{ fontSize: '12px', opacity: 0.7 }}>kWh</span></div>
+          <div className="stat-value" style={{ color: 'var(--accent-green)' }}>{totalKwh.toFixed(4)} <span style={{ fontSize: '12px', opacity: 0.7 }}>kWh</span></div>
         </div>
 
         <div className="stat-card" style={{ border: '1px solid rgba(59, 130, 246, 0.4)', boxShadow: '0 0 15px rgba(59, 130, 246, 0.05)' }}>
@@ -138,7 +138,7 @@ export default function DashboardPage() {
           <div className="stat-label">Predicción 30 días</div>
           <div className="stat-value" style={{ color: '#a855f7' }}>
             {(forecast?.predicted_next_30_days !== undefined && forecast?.predicted_next_30_days !== null) ? (
-              <>{forecast.predicted_next_30_days.toFixed(2)} <span style={{ fontSize: '12px', opacity: 0.7 }}>kWh</span></>
+              <>{forecast.predicted_next_30_days.toFixed(4)} <span style={{ fontSize: '12px', opacity: 0.7 }}>kWh</span></>
             ) : '--'}
           </div>
         </div>
