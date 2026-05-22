@@ -59,15 +59,29 @@ function AppLayout() {
   }, [location.pathname]);
 
   useEffect(() => {
-    // Opción 2: Secuestrar el botón de atrás para evitar salidas accidentales
-    window.history.pushState(null, "", window.location.href);
+    // Opción 2 Mejorada: Crear un "buffer" en el historial usando un hash (#app)
+    // Esto engaña a los navegadores estrictos (como Chrome) que ignoran pushState vacíos.
+    window.history.pushState(null, "", window.location.pathname + '#app');
+
     const handlePopState = () => {
-      window.history.pushState(null, "", window.location.href);
-      toast('Usa el menú lateral para navegar de forma segura', { icon: '🛡️' });
+      // Si el usuario retrocede, pierde el "#app". Lo detectamos y lo volvemos a atrapar.
+      if (window.location.hash !== '#app') {
+        window.history.pushState(null, "", window.location.pathname + '#app');
+        toast('Usa el menú lateral para navegar de forma segura', { icon: '🛡️' });
+      }
     };
+
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
+
+  useEffect(() => {
+    // Cuando NavLink cambia de ruta usando "replace", borra el hash. 
+    // Lo restauramos silenciosamente con replaceState para mantener la trampa activa sin inflar el historial.
+    if (window.location.hash !== '#app') {
+      window.history.replaceState(null, "", window.location.pathname + '#app');
+    }
+  }, [location.pathname]);
 
   const generatePDF = async () => {
     const loadingToast = toast.loading("Preparando reporte...");
