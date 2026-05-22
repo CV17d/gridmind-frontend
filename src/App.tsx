@@ -58,6 +58,17 @@ function AppLayout() {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
 
+  useEffect(() => {
+    // Opción 2: Secuestrar el botón de atrás para evitar salidas accidentales
+    window.history.pushState(null, "", window.location.href);
+    const handlePopState = () => {
+      window.history.pushState(null, "", window.location.href);
+      toast('Usa el menú lateral para navegar de forma segura', { icon: '🛡️' });
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   const generatePDF = async () => {
     const loadingToast = toast.loading("Preparando reporte...");
     try {
@@ -164,6 +175,7 @@ function AppLayout() {
             <NavLink
               key={item.to}
               to={item.to}
+              replace
               end={item.to === '/'}
               className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
             >
@@ -189,12 +201,12 @@ function AppLayout() {
             Reporte Energético
           </button>
           
-          <NavLink to="/settings" className="footer-link">
+          <NavLink to="/settings" replace className="footer-link">
             <Settings size={18} />
             Ajustes
           </NavLink>
           
-          <NavLink to="/support" className="footer-link">
+          <NavLink to="/support" replace className="footer-link">
             <LifeBuoy size={18} />
             Soporte
           </NavLink>
