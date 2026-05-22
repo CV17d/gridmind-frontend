@@ -32,26 +32,44 @@ api.interceptors.response.use(
   }
 );
 
-// --- Auth ---
-export const loginUser = (email: string, password: string) =>
-  api.post('/api/v1/users/login', { email, password });
+// Helper para hashear la contraseña en el frontend y evitar enviarla en texto plano
+async function hashPassword(password: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
 
-export const registerUser = (name: string, email: string, password: string) =>
-  api.post('/api/v1/users/register', { name, email, password });
+// --- Auth ---
+export const loginUser = async (email: string, password: string) => {
+  const hashedPassword = await hashPassword(password);
+  return api.post('/api/v1/users/login', { email, password: hashedPassword });
+};
+
+export const registerUser = async (name: string, email: string, password: string) => {
+  const hashedPassword = await hashPassword(password);
+  return api.post('/api/v1/users/register', { name, email, password: hashedPassword });
+};
 
 export const forgotPassword = (email: string) => 
   api.post('/api/v1/users/forgot-password', { email });
 
-export const resetPassword = (token: string, newPassword: string) => 
-  api.post('/api/v1/users/reset-password', { token, newPassword });
+export const resetPassword = async (token: string, newPassword: string) => {
+  const hashedNewPassword = await hashPassword(newPassword);
+  return api.post('/api/v1/users/reset-password', { token, newPassword: hashedNewPassword });
+};
 
 export const getUserProfile = () => api.get('/api/v1/users/me');
 
 export const updateSettings = (data: { name?: string; electricityRate?: number; alertThreshold?: number }) =>
   api.put('/api/v1/users/settings', data);
 
-export const changePassword = (currentPassword: string, newPassword: string) =>
-  api.put('/api/v1/users/change-password', { currentPassword, newPassword });
+export const changePassword = async (currentPassword: string, newPassword: string) => {
+  const hashedCurrent = await hashPassword(currentPassword);
+  const hashedNew = await hashPassword(newPassword);
+  return api.put('/api/v1/users/change-password', { currentPassword: hashedCurrent, newPassword: hashedNew });
+};
 
 // --- Devices ---
 export const getDevices = () => api.get('/api/v1/devices');
