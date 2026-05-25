@@ -83,7 +83,7 @@ export default function RegisterPage() {
             <label className="login-label">EMAIL DE TRABAJO</label>
             <div className="input-with-icon">
               <span className="input-icon font-symbol">@</span>
-              <input type="email" className="login-input has-left-icon" placeholder="alex@gridmind.io" value={email} onChange={(e) => setEmail(e.target.value)} required maxLength={100} />
+              <input type="email" className="login-input has-left-icon" placeholder="alex@gridmind.io" value={email} onChange={(e) => setEmail(e.target.value)} required maxLength={80} />
             </div>
           </div>
 

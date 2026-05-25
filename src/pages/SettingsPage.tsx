@@ -133,7 +133,7 @@ export default function SettingsPage() {
                     boxSizing: 'border-box' 
                   }}
                   placeholder="0.1200"
-                  max="1000"
+                  max="10"
                 />
               </div>
               <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: 6 }}>
@@ -153,7 +153,7 @@ export default function SettingsPage() {
                 onChange={e => setAlertThreshold(e.target.value)}
                 style={{ width: '100%', marginTop: 8, padding: '10px 14px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-color)', borderRadius: 8, color: '#fff', fontSize: 14, boxSizing: 'border-box' }}
                 placeholder="50"
-                max="999999"
+                max="2000"
               />
               <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: 4 }}>
                 Recibirás una alerta cuando tu consumo supere este valor.
