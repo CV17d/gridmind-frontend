@@ -184,7 +184,7 @@ export default function DashboardPage() {
         <div className="card" style={{ border: '1px solid rgba(59, 130, 246, 0.2)', background: 'linear-gradient(180deg, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.8) 100%)' }}>
           <div className="card-header">
             <h3>Monitor en Tiempo Real</h3>
-            {isLive && <div className="live-badge" style={{ backgroundColor: '#ef4444', boxShadow: '0 0 10px #ef4444' }}>EN VIVO</div>}
+            {isLive && <div className="live-badge" style={{ backgroundColor: '#ef4444', boxShadow: '0 0 10px #ef4444', borderRadius: '20px', whiteSpace: 'nowrap' }}>EN VIVO</div>}
           </div>
           <div className="pulse-monitor-container">
             <div className="pulse-bars-wrap">
