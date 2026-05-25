@@ -166,7 +166,6 @@ function AppLayout() {
             <NavLink
               key={item.to}
               to={item.to}
-              replace
               end={item.to === '/'}
               className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
             >
@@ -192,12 +191,12 @@ function AppLayout() {
             Reporte Energético
           </button>
           
-          <NavLink to="/settings" replace className="footer-link">
+          <NavLink to="/settings" className="footer-link">
             <Settings size={18} />
             Ajustes
           </NavLink>
           
-          <NavLink to="/support" replace className="footer-link">
+          <NavLink to="/support" className="footer-link">
             <LifeBuoy size={18} />
             Soporte
           </NavLink>
