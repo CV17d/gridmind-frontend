@@ -84,6 +84,7 @@ export default function ResetPasswordPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                maxLength={64}
               />
               <button
                 type="button"

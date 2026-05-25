@@ -142,6 +142,7 @@ export default function DevicesPage() {
                     placeholder="Ej: Enchufe Sala Principal" 
                     value={form.name} 
                     onChange={e => setForm({...form, name: e.target.value})} 
+                    maxLength={100}
                   />
                 </div>
 
@@ -171,6 +172,7 @@ export default function DevicesPage() {
                     className="form-input" 
                     value={form.powerRating} 
                     onChange={e => setForm({...form, powerRating: Number(e.target.value)})} 
+                    max="999999"
                   />
                 </div>
 
@@ -181,6 +183,7 @@ export default function DevicesPage() {
                     placeholder="Ej: GRID-NODE-001" 
                     value={form.esp32Id} 
                     onChange={e => setForm({...form, esp32Id: e.target.value})} 
+                    maxLength={50}
                   />
                 </div>
               </div>
