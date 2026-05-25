@@ -47,22 +47,24 @@ export default function AlertsPage() {
         </div>
       ) : (
         <div className="card" style={{ padding: 0 }}>
-          {alerts.map(alert => (
-            <div key={alert.id} className={`alert-item ${!alert.read ? 'unread' : ''}`}>
-              <span className="alert-icon">{alert.read ? '🔕' : '🚨'}</span>
-              <div className="alert-content">
-                <p className="alert-msg">{alert.message}</p>
-                <span className="alert-time">
-                  {new Date(alert.createdAt).toLocaleString()}
-                </span>
+          <div className="alerts-list">
+            {alerts.map(alert => (
+              <div key={alert.id} className={`alert-item ${!alert.read ? 'unread' : ''}`}>
+                <span className="alert-icon">{alert.read ? '🔕' : '🚨'}</span>
+                <div className="alert-content">
+                  <p className="alert-msg">{alert.message}</p>
+                  <span className="alert-time">
+                    {new Date(alert.createdAt).toLocaleString()}
+                  </span>
+                </div>
+                {!alert.read && (
+                  <button className="btn btn-secondary" style={{ flexShrink: 0, padding: '8px 16px', fontSize: '0.8rem' }} onClick={() => handleMarkRead(alert.id)}>
+                    ✅ Marcar leída
+                  </button>
+                )}
               </div>
-              {!alert.read && (
-                <button className="btn btn-secondary" style={{ flexShrink: 0, padding: '8px 16px', fontSize: '0.8rem' }} onClick={() => handleMarkRead(alert.id)}>
-                  ✅ Marcar leída
-                </button>
-              )}
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
     </>
