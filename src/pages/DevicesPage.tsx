@@ -193,7 +193,6 @@ export default function DevicesPage() {
                             gap: 8,
                             padding: '8px 18px',
                             borderRadius: 8,
-                            border: 'none',
                             cursor: isLoading ? 'not-allowed' : 'pointer',
                             fontWeight: 700,
                             fontSize: 12,
