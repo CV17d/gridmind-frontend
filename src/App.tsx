@@ -6,14 +6,14 @@ import { getUnreadCount, getDailyAnalytics, getForecast, getComparison, getDevic
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { toast } from 'react-hot-toast';
-import { 
-  LayoutDashboard, 
-  Cpu, 
-  FileText, 
-  Bell, 
-  Zap, 
-  Settings, 
-  LifeBuoy, 
+import {
+  LayoutDashboard,
+  Cpu,
+  FileText,
+  Bell,
+  Zap,
+  Settings,
+  LifeBuoy,
   LogOut,
   Menu,
   X
@@ -42,7 +42,7 @@ function AppLayout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const getPageTitle = () => {
-    switch(location.pathname) {
+    switch (location.pathname) {
       case '/': return 'Panel de Control';
       case '/devices': return 'Gestión de Activos';
       case '/bills': return 'Inteligencia de Facturación';
@@ -54,7 +54,7 @@ function AppLayout() {
   useEffect(() => {
     getUnreadCount()
       .then(res => setUnread(typeof res.data === 'number' ? res.data : (res.data?.unreadAlerts || 0)))
-      .catch(() => {});
+      .catch(() => { });
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
 
@@ -89,9 +89,9 @@ function AppLayout() {
       doc.setTextColor(15, 23, 42);
       doc.setFontSize(14);
       doc.text("1. Análisis de Consumo", 20, 55);
-      
+
       const totalKwhVal = chartData.reduce((acc: number, curr: any) => acc + (curr.totalKwh || 0), 0);
-      
+
       autoTable(doc, {
         startY: 62,
         head: [['Métrica', 'Detalle']],
@@ -120,7 +120,7 @@ function AppLayout() {
           theme: 'plain',
           styles: { fontSize: 10 }
         });
-        
+
         currentY = (doc as any).lastAutoTable.finalY + 10;
         doc.setFontSize(10);
         doc.setFont("helvetica", "italic");
@@ -151,7 +151,7 @@ function AppLayout() {
     <div className={`app-layout ${isMobileMenuOpen ? 'mobile-menu-active' : ''}`}>
       {/* Overlay para cerrar el menú al hacer clic fuera */}
       {isMobileMenuOpen && <div className="mobile-menu-overlay" onClick={() => setIsMobileMenuOpen(false)} />}
-      
+
       <aside className={`sidebar ${isMobileMenuOpen ? 'open' : ''}`}>
         <div className="sidebar-logo">
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -172,11 +172,11 @@ function AppLayout() {
               <span className="nav-icon">{item.icon}</span>
               {item.label}
               {item.badge && item.badge > 0 ? (
-                <span className="notification-dot" style={{ 
-                  width: '8px', 
-                  height: '8px', 
-                  backgroundColor: 'var(--accent-red)', 
-                  borderRadius: '50%', 
+                <span className="notification-dot" style={{
+                  width: '8px',
+                  height: '8px',
+                  backgroundColor: 'var(--accent-red)',
+                  borderRadius: '50%',
                   marginLeft: '8px',
                   boxShadow: '0 0 8px var(--accent-red)'
                 }}></span>
@@ -190,20 +190,20 @@ function AppLayout() {
             <Zap size={18} fill="currentColor" />
             Reporte Energético
           </button>
-          
+
           <NavLink to="/settings" className="footer-link">
             <Settings size={18} />
             Ajustes
           </NavLink>
-          
+
           <NavLink to="/support" className="footer-link">
             <LifeBuoy size={18} />
             Soporte
           </NavLink>
 
-          <button 
-            className="footer-link" 
-            onClick={logout} 
+          <button
+            className="footer-link"
+            onClick={logout}
             style={{ background: 'transparent', border: 'none', cursor: 'pointer', width: '100%', padding: 0 }}
           >
             <LogOut size={18} />
@@ -218,24 +218,24 @@ function AppLayout() {
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
           <div className="header-info">
-          <h2 style={{ fontSize: '26px', fontWeight: 800, color: 'var(--accent-green)', letterSpacing: '-0.5px' }}>{getPageTitle()}</h2>
-          <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Bienvenido de nuevo al centro de control</p>
-        </div>
-        <div className="header-actions">
+            <h2 style={{ fontSize: '26px', fontWeight: 800, color: 'var(--accent-green)', letterSpacing: '-0.5px' }}>{getPageTitle()}</h2>
+            <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Bienvenido de nuevo al centro de control</p>
+          </div>
+          <div className="header-actions">
             <div className="status-badge">
               <span className="status-dot"></span>
               ESTADO EN VIVO
             </div>
-            
+
             <div className="user-profile">
               <div className="user-info">
                 <div className="user-status">CONECTADO</div>
                 <div className="user-name" style={{ fontSize: '14px', fontWeight: 700, color: '#fff' }}>{userName || 'Usuario'}</div>
               </div>
               <div className="avatar">
-                <img 
-                  src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${userName || userEmail}`} 
-                  alt="Avatar" 
+                <img
+                  src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${userName || userEmail}`}
+                  alt="Avatar"
                   style={{ width: '100%', height: '100%', borderRadius: '50%' }}
                 />
               </div>

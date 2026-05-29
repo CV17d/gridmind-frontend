@@ -76,6 +76,12 @@ export const getDevices = () => api.get('/api/v1/devices');
 export const createDevice = (device: { name: string; type: string; powerRating: number; esp32Id: string }) =>
   api.post('/api/v1/devices', device);
 
+// --- Relay Control ---
+export const getRelayState = (deviceId: number) =>
+  api.get(`/api/v1/devices/${deviceId}/relay`);
+export const setRelayState = (deviceId: number, state: boolean) =>
+  api.post(`/api/v1/devices/${deviceId}/relay`, { state });
+
 // --- Energy Consumption ---
 export const getEnergyByDevice = (deviceId: number) =>
   api.get(`/api/v1/energy/${deviceId}`);
